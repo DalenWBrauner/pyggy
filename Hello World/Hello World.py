@@ -3,6 +3,9 @@ from pyglet.window import key, mouse
 
 # CONSTANTS
 RESOLUTIONS = [(640,480),(800,600),(1024,640),(1024,800),(1080,720),(1280,720),(1680,1050)]
+buttons = []
+for r in RESOLUTIONS:
+    buttons.append(pyglet.resource.image("resolution_button_individual.png"))
 
 # SYSTEM SETTINGS
 current_resolution = 0
@@ -32,8 +35,8 @@ def change_size(whichRes):
     # Set which resolution we're using
     CURRENT_RESOLUTION = whichRes
 
-    # Change the offset    
-    offsets['resolution_buttons'][0] = newRes[0]/2 - 266   # x
+    # Change the offset (button positions)
+    offsets['resolution_buttons'][0] = newRes[0]/2 - 76*len(buttons)/2   # x
     offsets['resolution_buttons'][1] = newRes[1]/2 - 112   # y
 
     # Change the resolution
@@ -65,9 +68,13 @@ def on_draw():
     # Set background color
     window.clear()
 
-    # Draw the image at specified position
+    # Draw the images at their specified positions
+    for each_button in buttons:
+        each_button.blit(offsets['resolution_buttons'][0],
+                         offsets['resolution_buttons'][1])
     image.blit(offsets['resolution_buttons'][0],
                offsets['resolution_buttons'][1])
+    
     
     # Draw the label
     #label.draw()                       # Draw the label onto the window
