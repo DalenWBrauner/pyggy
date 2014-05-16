@@ -3,9 +3,6 @@ from pyglet.window import key, mouse
 
 # CONSTANTS
 RESOLUTIONS = [(640,480),(800,600),(1024,640),(1024,800),(1080,720),(1280,720),(1680,1050)]
-buttons = []
-for r in RESOLUTIONS:
-    buttons.append(pyglet.resource.image("resolution_button_individual.png"))
 
 # SYSTEM SETTINGS
 current_resolution = 0
@@ -36,7 +33,7 @@ def change_size(whichRes):
     CURRENT_RESOLUTION = whichRes
 
     # Change the offset (button positions)
-    offsets['resolution_buttons'][0] = newRes[0]/2 - 76*len(buttons)/2   # x
+    offsets['resolution_buttons'][0] = newRes[0]/2 - 76*len(RESOLUTIONS)/2   # x
     offsets['resolution_buttons'][1] = newRes[1]/2 - 112   # y
 
     # Change the resolution
