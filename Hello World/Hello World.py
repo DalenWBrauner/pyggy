@@ -7,15 +7,19 @@ RESOLUTIONS = [(640,480),(800,600),(1024,640),(1024,800),(1080,720),(1280,720),(
 # SETUP
 current_resolution = 0
 window = pyglet.window.Window()
+
+# LOAD SFX
+sfx = pyglet.resource.media("boing.wav", streaming=False)
+save_sfx = pyglet.resource.media("coin.wav", streaming=False)
+
+# LOAD IMAGES
 image0 = pyglet.resource.image("resolution_buttons.png")
 image1 = pyglet.resource.image("resolution_button_individual.png")
 image2 = pyglet.resource.image("resolution_labels.png")
 image3 = pyglet.resource.image("resolution_button_individual_selected_rotated.png")
 image4 = pyglet.resource.image("save_label.png")
-sfx = pyglet.resource.media('boing.wav', streaming=False)
-save_sfx = pyglet.resource.media('coin.wav', streaming=False)
 
-# SPRITE STUFF
+# SETUP SPRITES
 batch_of_sprites = pyglet.graphics.Batch()
 layer = [ pyglet.graphics.OrderedGroup(x) for x in xrange(2)]
 buttons = [ pyglet.sprite.Sprite(image1,
