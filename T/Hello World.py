@@ -7,7 +7,7 @@ from pyglet.sprite import Sprite as pygSprite
 
 # CONSTANTS
 IMAGE_FILES = ('B_green.png','B_orange.png','B_green90.png','B_orange90.png','L_save.png')
-SOUND_FILES = ('boing.wav','coin.wav')
+SOUND_FILES = ('start.wav','go.wav')
 
 # LOAD SOUND EFFECTS
 SFX = {}
@@ -68,7 +68,7 @@ save_label = pygSprite( IMG['L_save'],
                         )
 
 USER_PREF = 0
-
+SFX['start'].play()
 
 @WINDOW.event
 def on_mouse_press(x, y, button, modifiers):
@@ -77,6 +77,7 @@ def on_mouse_press(x, y, button, modifiers):
     if y < IMG['L_save'].height:
         with open('saved_resolution.txt','w') as f:
             f.write(str(USER_PREF)+'\n')
+        SFX['go'].play()
     elif x < button_width:
         USER_PREF = 1
     elif x < button_width*2:
@@ -92,9 +93,6 @@ def on_mouse_press(x, y, button, modifiers):
 def on_draw():
     WINDOW.clear()  # Set background color
     Batch.draw()    # Draw ALL the sprites!
-
-def export():
-    print "I'M EXPORTING THINGS I SWEAR"
 
 #WINDOW.push_handlers(pyglet.window.event.WindowEventLogger())
 pyglet.app.run()

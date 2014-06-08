@@ -20,12 +20,12 @@ script_file = 'Hello World.py'
 ##        image_files.append(file)
 ##
 ##mydata_files = [('data\sounds', sound_files), ('data\images', image_files)]
-sound_files = ['boing.wav','coin.wav']
-image_files = ['resolution_buttons.png',
-               'resolution_button_individual.png',
-               'resolution_labels.png',
-               'resolution_button_individual_selected_rotated.png',
-               'save_label.png']
+sound_files = ['start.wav','go.wav']
+image_files = ['B_green.png',
+               'B_green90.png',
+               'B_orange.png',
+               'B_orange90.png',
+               'L_save.png']
 mydata_files = [('', sound_files), ('', image_files)]
 
 # Setup args that apply to all setups, including ordinary distutils.
