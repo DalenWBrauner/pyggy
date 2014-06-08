@@ -6,7 +6,7 @@ from pyglet.resource import media as pygMedia
 from pyglet.sprite import Sprite as pygSprite
 
 # CONSTANTS
-IMAGE_FILES = ('B_green.png','B_orange.png','L_save.png')
+IMAGE_FILES = ('B_green90.png','B_orange.png','L_save.png')
 SOUND_FILES = ('boing.wav','coin.wav')
 
 # LOAD SOUND EFFECTS
@@ -24,37 +24,48 @@ Batch = pyglet.graphics.Batch()
 Layer = [ pyglet.graphics.OrderedGroup(x) for x in xrange(10)]
 
 # WINDOW SETUP
-win_width = IMG['B_green'].width * 4
-win_height = IMG['B_green'].height
 WINDOW = pyglet.window.Window()
+# Notice: window size is dynamic with image sizes
+button_width = max(( IMG['B_green90'].width , IMG['B_orange'].width ))
+button_height = max(( IMG['B_green90'].height , IMG['B_orange'].height ))
+win_width = button_width * 4
+win_height = button_height + IMG['L_save'].height
+
 WINDOW.set_size(win_width, win_height)
 
 # WE'RE GONNA HAVE FUN WITH THIS THING
-4buttons = [ pygSprite( IMG['B_green'],
+# Notice: Sprite positions are dynamic with image sizes
+buttons4 = [ pygSprite( IMG['B_green90'],
                         x = 0,
-                        y = 0,
+                        y = IMG['L_save'].height,
                         batch = Batch,
                         group = Layer[0]
                         ),
              pygSprite( IMG['B_orange'],
-                        x = ( win_width/4 ),
-                        y = 0,
+                        x = button_width,
+                        y = IMG['L_save'].height,
                         batch = Batch,
                         group = Layer[0]
                         ),
-             pygSprite( IMG['B_green'],
-                        x = ( win_width/4 ) *2,
-                        y = 0,
+             pygSprite( IMG['B_green90'],
+                        x = button_width *2,
+                        y = IMG['L_save'].height,
                         batch = Batch,
                         group = Layer[0]
                         ),
              pygSprite( IMG['B_orange'],
-                        x = ( win_width/4 ) *3,
-                        y = 0,
+                        x = button_width *3,
+                        y = IMG['L_save'].height,
                         batch = Batch,
                         group = Layer[0]
                         ),
              ]
+save_label = pygSprite( IMG['L_save'],
+                        x = (win_width/2) - (IMG['L_save'].width/2),
+                        y = 0,
+                        batch = Batch,
+                        group = Layer[0]
+                        )
 
 
 # FUNCTIONS
@@ -108,12 +119,12 @@ def on_mouse_press(x, y, button, modifiers):
 ##@window.event
 ##def on_key_press(symbol, modifiers):
 ##    pass
-    print WINDOW.get_size()
+    pass
 
 @WINDOW.event
 def on_draw():
     WINDOW.clear()  # Set background color
     Batch.draw()    # Draw ALL the sprites!
 
-##window.push_handlers(pyglet.window.event.WindowEventLogger())
+WINDOW.push_handlers(pyglet.window.event.WindowEventLogger())
 pyglet.app.run()
