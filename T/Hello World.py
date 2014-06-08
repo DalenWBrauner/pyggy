@@ -67,42 +67,26 @@ save_label = pygSprite( IMG['L_save'],
                         group = Layer[0]
                         )
 
-
+USER_PREF = 0
 
 
 @WINDOW.event
 def on_mouse_press(x, y, button, modifiers):
+    global USER_PREF
     # Check the y range first.
     if y < IMG['L_save'].height:
-        print "SAVE"
+        with open('saved_resolution.txt','w') as f:
+            f.write(str(USER_PREF)+'\n')
     elif x < button_width:
-        print 1
+        USER_PREF = 1
     elif x < button_width*2:
-        print 2
+        USER_PREF = 2
     elif x < button_width*3:
-        print 3
+        USER_PREF = 3
     elif x < button_width*4:
-        print 4
+        USER_PREF = 4
     else:
-        print "Nope.avi"
-        
-        
-        
-##        
-##        # If they've actually clicked a buttons, react appropriately.
-##        for e in xrange(len(buttons)):
-##            if buttons[e].x < x <= buttons[e].x + 76:
-##                change_size(e)
-##                break
-##
-##    # If they've clicked the GO/EXPORT button, export a .txt stating the resolution
-##    elif  (bttn_y-76) <= y < (bttn_y) and (buttons[-1].x - 224 + 76 <= x <= buttons[-1].x + 76):
-##        export_res()
-##
-##@window.event
-##def on_key_press(symbol, modifiers):
-##    pass
-    pass
+        USER_PREF = 'Nope.avi'
 
 @WINDOW.event
 def on_draw():
