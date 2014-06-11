@@ -74,30 +74,12 @@ class CustomWindow(pyglet.window.Window):
             with open('saved_settings.txt','w') as f:
                 f.write(str(self.selected+1)+'\n')
             self.SFX['go'].play()
-
-        # Button 1
-        elif x < self.max_w:
-            self.options[0].image = self.IMG['B01_press']
-            self.pressed = 0
-            self.SFX['click'].play()
-
-        # Button 2
-        elif x < self.max_w*2:
-            self.options[1].image = self.IMG['B02_press']
-            self.pressed = 1
-            self.SFX['click'].play()
-
-        # Button 3
-        elif x < self.max_w*3:
-            self.options[2].image = self.IMG['B03_press']
-            self.pressed = 2
-            self.SFX['click'].play()
-
-        # Button 4
-        elif x < self.max_w*4:
-            self.options[3].image = self.IMG['B04_press']
-            self.pressed = 3
-            self.SFX['click'].play()
+            
+        # Buttons 1-4
+        elif x < self.max_w:    self.press_button(0)
+        elif x < self.max_w*2:  self.press_button(1)
+        elif x < self.max_w*3:  self.press_button(2)
+        elif x < self.max_w*4:  self.press_button(3)
 
     def on_mouse_release(self, x, y, button, modifiers):
         # If a button is being pressed
@@ -106,15 +88,25 @@ class CustomWindow(pyglet.window.Window):
             # ...and another button was already selected
             if self.selected != -1:
                 # Set that button back to normal FIRST
-                self.options[self.selected].image = self.IMG['B0'+str(self.selected+1)+'_norm']
+                self.draw_button(self.selected,'norm')
 
             # Select it
-            self.options[self.pressed].image = self.IMG['B0'+str(self.pressed+1)+'_selec']
+            self.draw_button(self.pressed,'selec')
             self.selected = self.pressed
 
     def on_draw(self):
-        self.clear()        # Set background color
-        self.batch.draw()   # Draw ALL the sprites!
+        self.clear()        # Reset
+        self.batch.draw()   # Draw Everything
+
+    def press_button(self, which):
+        print "PRESSING BUTTON",which
+        self.draw_button(which,'press')
+        self.pressed = which
+        self.SFX['click'].play()
+    
+    def draw_button(self, which, to_what):
+        print "DRAWING BUTTON",which,"TO",to_what
+        self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
 
 def main():
     # CONSTANTS
@@ -131,16 +123,18 @@ def main():
     for sound in SOUND_FILES:
         SFX[ sound[:-4] ] = pygMedia(sound, streaming=False)
 
-    # I want to play this AS SOON AS POSSIBLE
+    # PLAY ASAP
     SFX['start'].play()
 
     # LOAD IMAGES
     IMG = {}
     for image in IMAGE_FILES:
         IMG[ image[:-4] ] = pygImage(image)
-    
+
+    # LAUNCH WINDOW
     WIN = CustomWindow(IMG, SFX)
 
+    # GOGOGO
     ##WIN.push_handlers(pyglet.window.event.WindowEventLogger())
     pyglet.app.run()
 
