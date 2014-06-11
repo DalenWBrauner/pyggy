@@ -8,35 +8,39 @@ from pyglet.image import load as LocalImage
 class CustomWindow(pyglet.window.Window):
     def __init__(self, IMG, SFX, *args, **kwargs):
 
-        # Grab these for all to see
+        # Image and sound libraries
         self.IMG = IMG
         self.SFX = SFX
-
         
         # Window size is dynamic with respect to button sizes
+        #     Grab the largest width
         self.max_w = max(
             self.IMG['B01_norm'].width,
             self.IMG['B02_norm'].width,
             self.IMG['B03_norm'].width,
             self.IMG['B04_norm'].width,)
+        #     Grab the largest height
         self.max_h = max(
             self.IMG['B01_norm'].height,
             self.IMG['B02_norm'].height,
             self.IMG['B03_norm'].height,
             self.IMG['B04_norm'].height,)
+        #     Our window has 4 buttons across, adjust width to accomodate them
         win_width = self.max_w * 4
+        #     Our window is 2 buttons high, adjust height to accomodate them
         win_height = self.max_h + self.IMG['B05_norm'].height
+        #     Set the window height accordingly
         super(CustomWindow, self).__init__(win_width, win_height, caption='Transition()')
 
+        # Set the icon
         self.set_icon(LocalImage('icon1.png'),LocalImage('icon2.png'))
 
         # Prep for Sprites
         self.batch = pyglet.graphics.Batch()
         self.layer = [ pyglet.graphics.OrderedGroup(x) for x in xrange(10)]
 
-        # Prep for Buttons
+        # Draw Buttons
         self.pressed = self.selected = -1
-
         self.options = [
             pygSprite( self.IMG['B01_norm'],
                        x = 0,
@@ -69,28 +73,27 @@ class CustomWindow(pyglet.window.Window):
                             batch = self.batch, group = self.layer[0])
 
     def on_mouse_press(self, x, y, button, modifiers):
-        # Button 5
+        # Button 5 is clicked
         if y < self.IMG['B05_norm'].height:
             with open('saved_settings.txt','w') as f:
                 f.write(str(self.selected+1)+'\n')
             self.SFX['go'].play()
             
-        # Buttons 1-4
+        # Buttons 1-4 are clicked
         elif x < self.max_w:    self.press_button(0)
         elif x < self.max_w*2:  self.press_button(1)
         elif x < self.max_w*3:  self.press_button(2)
         elif x < self.max_w*4:  self.press_button(3)
 
     def on_mouse_release(self, x, y, button, modifiers):
-        # If a button is being pressed
+        # If a button was pressed, select it.
         if self.pressed != -1:
 
-            # ...and another button was already selected
+            # If another button was already selected, reset it first.
             if self.selected != -1:
-                # Set that button back to normal FIRST
                 self.draw_button(self.selected,'norm')
 
-            # Select it
+            # We've selected whichever button the user was pressing!
             self.draw_button(self.pressed,'selec')
             self.selected = self.pressed
 
@@ -99,13 +102,13 @@ class CustomWindow(pyglet.window.Window):
         self.batch.draw()   # Draw Everything
 
     def press_button(self, which):
-        print "PRESSING BUTTON",which
+        """ If the user presses one of the 4 buttons """
         self.draw_button(which,'press')
         self.pressed = which
         self.SFX['click'].play()
     
     def draw_button(self, which, to_what):
-        print "DRAWING BUTTON",which,"TO",to_what
+        """ For changing button visuals. """
         self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
 
 def main():
