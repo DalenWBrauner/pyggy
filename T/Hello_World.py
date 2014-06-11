@@ -69,11 +69,10 @@ class CustomWindow(pyglet.window.Window):
                             batch = self.batch, group = self.layer[0])
 
     def on_mouse_press(self, x, y, button, modifiers):
-        
         # Button 5
         if y < self.IMG['B05_norm'].height:
             with open('saved_settings.txt','w') as f:
-                f.write(str(self.selected)+'\n')
+                f.write(str(self.selected+1)+'\n')
             self.SFX['go'].play()
 
         # Button 1
