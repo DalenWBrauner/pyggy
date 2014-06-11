@@ -78,37 +78,60 @@ save_label = pygSprite( IMG['B05_norm'],
                         batch = Batch,
                         group = Layer[0]
                         )
+BEING_PRESSED = None
+USER_PREF = -1
 
-USER_PREF = 0
 SFX['start'].play()
 
 @WINDOW.event
 def on_mouse_press(x, y, button, modifiers):
+    global BEING_PRESSED
     global USER_PREF
-    # Check the y range first.
+    
+    # Button 5
     if y < IMG['B05_norm'].height:
-        with open('saved_resolution.txt','w') as f:
+        with open('saved_settings.txt','w') as f:
             f.write(str(USER_PREF)+'\n')
         SFX['go'].play()
+
+    # Button 1
     elif x < button_width:
         buttons4[0].image = IMG['B01_press']
-        USER_PREF = 1
+        BEING_PRESSED = 0
+
+    # Button 2
     elif x < button_width*2:
         buttons4[1].image = IMG['B02_press']
-        USER_PREF = 2
+        BEING_PRESSED = 1
+
+    # Button 3
     elif x < button_width*3:
         buttons4[2].image = IMG['B03_press']
-        USER_PREF = 3
+        BEING_PRESSED = 2
+
+    # Button 4
     elif x < button_width*4:
         buttons4[3].image = IMG['B04_press']
-        USER_PREF = 4
-    else:
-        USER_PREF = 'Nope.avi'
+        BEING_PRESSED = 3
 
 @WINDOW.event
 def on_mouse_release(x, y, button, modifiers):
-    # If any of the buttons are being pressed, release them
-    pass
+    global BEING_PRESSED
+    global USER_PREF
+    
+    # If a button is being pressed
+    if BEING_PRESSED != None:
+
+        # ...and another button was already selected
+        if USER_PREF != -1:
+            # Set that button back to normal FIRST
+            buttons4[USER_PREF].image = IMG['B0'+str(USER_PREF+1)+'_norm']
+
+        # Select it
+        buttons4[BEING_PRESSED].image = IMG['B0'+str(BEING_PRESSED+1)+'_selec']
+        USER_PREF = BEING_PRESSED
+            
+        
 
 
 @WINDOW.event
