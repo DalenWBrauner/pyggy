@@ -114,16 +114,11 @@ class CustomWindow(pyglet.window.Window):
 
         # By default, save their setting in the .exe directory
         if not path.isfile('write_to.txt'):
-
-            with open("saved_settings.txt",'w') as f:
-                f.write(str(self.selected+1)+'\n')
-
-                print "We didn't find the file so we're doing it the lame way."
-
+            directory = '.'
+            print "No write_to.txt ; File saved locally."
             
         # But if there's a file to be found, it might have a directory...
         else:
-
             print "Found the file..."
 
             # Let's crack it open...
@@ -131,19 +126,15 @@ class CustomWindow(pyglet.window.Window):
                 directory = f.read()
 
             # If the directory is there, write to it!
-            if path.exists(directory):
-
-                    with open(path.join(directory,"saved_settings.txt"),'w') as f:
-                        f.write(str(self.selected+1)+'\n')
-
-                        print "Look at that! Saved it at",directory
+            if not path.exists(directory):
+                print directory,"didn't exist ; File saved locally."
+                directory = '.'
 
             else:
-                
-                with open("saved_settings.txt",'w') as f:
-                    f.write(str(self.selected+1)+'\n')
+                print "Preferences saved at",directory
 
-                    print directory,"didn't exist so we're doing it the lame way."
+        with open(path.join(directory,"saved_settings.txt"),'w') as f:
+            f.write(str(self.selected+1)+'\n')
 
         self.SFX['go'].play()
 
