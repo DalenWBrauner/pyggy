@@ -46,7 +46,7 @@ def main():
     win_height = button_height + IMG['B05_norm'].height
 
     WINDOW.set_size(win_width, win_height)
-    
+    WINDOW.set_icon(LocalImage('icon1.png'),LocalImage('icon2.png'))
     
 
     # WE'RE GONNA HAVE FUN WITH THIS THING
