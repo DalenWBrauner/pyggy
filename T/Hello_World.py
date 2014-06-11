@@ -74,10 +74,7 @@ class CustomWindow(pyglet.window.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         # Button 5 is clicked
-        if y < self.IMG['B05_norm'].height:
-            with open('saved_settings.txt','w') as f:
-                f.write(str(self.selected+1)+'\n')
-            self.SFX['go'].play()
+        if y < self.IMG['B05_norm'].height:     self.submit()
             
         # Buttons 1-4 are clicked
         elif x < self.max_w:    self.press_button(0)
@@ -110,6 +107,11 @@ class CustomWindow(pyglet.window.Window):
     def draw_button(self, which, to_what):
         """ For changing button visuals. """
         self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
+
+    def submit(self):
+        with open('saved_settings.txt','w') as f:
+                f.write(str(self.selected+1)+'\n')
+            self.SFX['go'].play()
 
 def main():
     # CONSTANTS
