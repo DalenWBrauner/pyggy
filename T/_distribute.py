@@ -1,9 +1,10 @@
 from distutils.core import setup
-
 import os
 
+from Hello_World import IMAGE_FILES, SOUND_FILES
+
 # The main entry point of the program
-script_file = 'Hello World.py'
+script_file = 'Hello_World.py'
 
 # Create a list of data files.
 ##sound_files = []
@@ -20,13 +21,7 @@ script_file = 'Hello World.py'
 ##        image_files.append(file)
 ##
 ##mydata_files = [('data\sounds', sound_files), ('data\images', image_files)]
-sound_files = ['start.wav','go.wav']
-image_files = ['B_green.png',
-               'B_green90.png',
-               'B_orange.png',
-               'B_orange90.png',
-               'L_save.png']
-mydata_files = [('', sound_files), ('', image_files)]
+mydata_files = [('', SOUND_FILES), ('', IMAGE_FILES)]
 
 # Setup args that apply to all setups, including ordinary distutils.
 setup_args = dict(
