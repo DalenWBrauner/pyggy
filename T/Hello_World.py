@@ -113,7 +113,7 @@ class CustomWindow(pyglet.window.Window):
     def submit(self):
 
         # By default, save their setting in the .exe directory
-        if not path.isfile('write_to.txt'):
+        if not path.isfile('write_directories.txt'):
             directory = '.'
             print "No write_to.txt ; File saved locally."
             
@@ -122,7 +122,7 @@ class CustomWindow(pyglet.window.Window):
             print "Found the file..."
 
             # Let's crack it open...
-            with open("write_to.txt","r") as f:
+            with open("write_directories.txt","r") as f:
                 directory = f.read()
 
             # If the directory is there, write to it!
