@@ -1,5 +1,7 @@
 T/Assets/*
 T/Other Assets/*
+T/Read From/*
+T/Write To/*
 T/saved_settings.txt
 T/write_directories.txt
 
