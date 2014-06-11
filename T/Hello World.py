@@ -11,7 +11,7 @@ IMAGE_FILES = ('B01_norm.png','B01_press.png','B01_selec.png',
                'B03_norm.png','B03_press.png','B03_selec.png',
                'B04_norm.png','B04_press.png','B04_selec.png',
                'B05_norm.png')
-SOUND_FILES = ('start.wav','go.wav')
+SOUND_FILES = ('start.wav','go.wav','click.wav')
 
 # LOAD SOUND EFFECTS
 SFX = {}
@@ -98,21 +98,25 @@ def on_mouse_press(x, y, button, modifiers):
     elif x < button_width:
         buttons4[0].image = IMG['B01_press']
         BEING_PRESSED = 0
+        SFX['click'].play()
 
     # Button 2
     elif x < button_width*2:
         buttons4[1].image = IMG['B02_press']
         BEING_PRESSED = 1
+        SFX['click'].play()
 
     # Button 3
     elif x < button_width*3:
         buttons4[2].image = IMG['B03_press']
         BEING_PRESSED = 2
+        SFX['click'].play()
 
     # Button 4
     elif x < button_width*4:
         buttons4[3].image = IMG['B04_press']
         BEING_PRESSED = 3
+        SFX['click'].play()
 
 @WINDOW.event
 def on_mouse_release(x, y, button, modifiers):
@@ -130,14 +134,11 @@ def on_mouse_release(x, y, button, modifiers):
         # Select it
         buttons4[BEING_PRESSED].image = IMG['B0'+str(BEING_PRESSED+1)+'_selec']
         USER_PREF = BEING_PRESSED
-            
-        
-
 
 @WINDOW.event
 def on_draw():
     WINDOW.clear()  # Set background color
     Batch.draw()    # Draw ALL the sprites!
 
-WINDOW.push_handlers(pyglet.window.event.WindowEventLogger())
+#WINDOW.push_handlers(pyglet.window.event.WindowEventLogger())
 pyglet.app.run()
