@@ -5,6 +5,118 @@ from pyglet.resource import media as pygMedia
 from pyglet.sprite import Sprite as pygSprite
 from pyglet.image import load as LocalImage
 
+class CustomWindow(pyglet.window.Window):
+    def __init__(self, IMG, SFX, *args, **kwargs):
+
+        # Grab these for all to see
+        self.IMG = IMG
+        self.SFX = SFX
+
+        
+        # Window size is dynamic with respect to button sizes
+        self.max_w = max(
+            self.IMG['B01_norm'].width,
+            self.IMG['B02_norm'].width,
+            self.IMG['B03_norm'].width,
+            self.IMG['B04_norm'].width,)
+        self.max_h = max(
+            self.IMG['B01_norm'].height,
+            self.IMG['B02_norm'].height,
+            self.IMG['B03_norm'].height,
+            self.IMG['B04_norm'].height,)
+        win_width = self.max_w * 4
+        win_height = self.max_h + self.IMG['B05_norm'].height
+        super(CustomWindow, self).__init__(win_width, win_height, caption='Transition()')
+
+        self.set_icon(LocalImage('icon1.png'),LocalImage('icon2.png'))
+
+        # Prep for Sprites
+        self.batch = pyglet.graphics.Batch()
+        self.layer = [ pyglet.graphics.OrderedGroup(x) for x in xrange(10)]
+
+        # Prep for Buttons
+        self.pressed = self.selected = -1
+
+        self.options = [
+            pygSprite( self.IMG['B01_norm'],
+                       x = 0,
+                       y = self.IMG['B05_norm'].height,
+                       batch = self.batch,
+                       group = self.layer[0]
+                       ),
+            pygSprite( self.IMG['B02_norm'],
+                       x = self.max_w,
+                       y = self.IMG['B05_norm'].height,
+                       batch = self.batch,
+                       group = self.layer[0]
+                       ),
+            pygSprite( self.IMG['B03_norm'],
+                       x = self.max_w *2,
+                       y = self.IMG['B05_norm'].height,
+                       batch = self.batch,
+                       group = self.layer[0]
+                       ),
+            pygSprite( self.IMG['B04_norm'],
+                       x = self.max_w *3,
+                       y = self.IMG['B05_norm'].height,
+                       batch = self.batch,
+                       group = self.layer[0]
+                       ),
+            ]
+        self.save_button = pygSprite( self.IMG['B05_norm'],
+                            x = (win_width/2) - (self.IMG['B05_norm'].width/2),
+                            y = 0,
+                            batch = self.batch, group = self.layer[0])
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        
+        # Button 5
+        if y < self.IMG['B05_norm'].height:
+            with open('saved_settings.txt','w') as f:
+                f.write(str(self.selected)+'\n')
+            self.SFX['go'].play()
+
+        # Button 1
+        elif x < self.max_w:
+            self.options[0].image = self.IMG['B01_press']
+            self.pressed = 0
+            self.SFX['click'].play()
+
+        # Button 2
+        elif x < self.max_w*2:
+            self.options[1].image = self.IMG['B02_press']
+            self.pressed = 1
+            self.SFX['click'].play()
+
+        # Button 3
+        elif x < self.max_w*3:
+            self.options[2].image = self.IMG['B03_press']
+            self.pressed = 2
+            self.SFX['click'].play()
+
+        # Button 4
+        elif x < self.max_w*4:
+            self.options[3].image = self.IMG['B04_press']
+            self.pressed = 3
+            self.SFX['click'].play()
+
+    def on_mouse_release(self, x, y, button, modifiers):
+        # If a button is being pressed
+        if self.pressed != -1:
+
+            # ...and another button was already selected
+            if self.selected != -1:
+                # Set that button back to normal FIRST
+                self.options[self.selected].image = self.IMG['B0'+str(self.selected+1)+'_norm']
+
+            # Select it
+            self.options[self.pressed].image = self.IMG['B0'+str(self.pressed+1)+'_selec']
+            self.selected = self.pressed
+
+    def on_draw(self):
+        self.clear()        # Set background color
+        self.batch.draw()   # Draw ALL the sprites!
+
 def main():
     # CONSTANTS
     IMAGE_FILES = ('B01_norm.png','B01_press.png','B01_selec.png',
@@ -20,156 +132,17 @@ def main():
     for sound in SOUND_FILES:
         SFX[ sound[:-4] ] = pygMedia(sound, streaming=False)
 
+    # I want to play this AS SOON AS POSSIBLE
+    SFX['start'].play()
+
     # LOAD IMAGES
     IMG = {}
     for image in IMAGE_FILES:
         IMG[ image[:-4] ] = pygImage(image)
-
-    # PREP FOR SPRITES
-    Batch = pyglet.graphics.Batch()
-    Layer = [ pyglet.graphics.OrderedGroup(x) for x in xrange(10)]
-
-    # WINDOW SETUP
-    WINDOW = pyglet.window.Window()
-    # Notice: window size is dynamic with image sizes
-    button_width = max(
-        IMG['B01_norm'].width,
-        IMG['B02_norm'].width,
-        IMG['B03_norm'].width,
-        IMG['B04_norm'].width,)
-    button_height = max(
-        IMG['B01_norm'].height,
-        IMG['B02_norm'].height,
-        IMG['B03_norm'].height,
-        IMG['B04_norm'].height,)
-    win_width = button_width * 4
-    win_height = button_height + IMG['B05_norm'].height
-
-    WINDOW.set_size(win_width, win_height)
-    WINDOW.set_icon(LocalImage('icon1.png'),LocalImage('icon2.png'))
     
+    WIN = CustomWindow(IMG, SFX)
 
-    # WE'RE GONNA HAVE FUN WITH THIS THING
-    # Notice: Sprite positions are dynamic with image sizes
-    buttons4 = [ pygSprite( IMG['B01_norm'],
-                            x = 0,
-                            y = IMG['B05_norm'].height,
-                            batch = Batch,
-                            group = Layer[0]
-                            ),
-                 pygSprite( IMG['B02_norm'],
-                            x = button_width,
-                            y = IMG['B05_norm'].height,
-                            batch = Batch,
-                            group = Layer[0]
-                            ),
-                 pygSprite( IMG['B03_norm'],
-                            x = button_width *2,
-                            y = IMG['B05_norm'].height,
-                            batch = Batch,
-                            group = Layer[0]
-                            ),
-                 pygSprite( IMG['B04_norm'],
-                            x = button_width *3,
-                            y = IMG['B05_norm'].height,
-                            batch = Batch,
-                            group = Layer[0]
-                            ),
-                 ]
-    save_label = pygSprite( IMG['B05_norm'],
-                            x = (win_width/2) - (IMG['B05_norm'].width/2),
-                            y = 0,
-                            batch = Batch,
-                            group = Layer[0]
-                            )
-    # I don't know how else to let on_mouse_press() access these :(
-    global BEING_PRESSED
-    global USER_PREF
-    BEING_PRESSED = None
-    USER_PREF = -1
-
-    SFX['start'].play()
-
-    @WINDOW.event
-    def on_mouse_motion(x, y, dx, dy):
-        # Button 5
-        if y < IMG['B05_norm'].height:
-            pass
-
-        # Button 1
-        elif x < button_width:
-            pass
-
-        # Button 2
-        elif x < button_width*2:
-            pass
-
-        # Button 3
-        elif x < button_width*3:
-            pass
-
-        # Button 4
-        elif x < button_width*4:
-            pass
-
-    @WINDOW.event
-    def on_mouse_press(x, y, button, modifiers):
-        global BEING_PRESSED
-        global USER_PREF
-        
-        # Button 5
-        if y < IMG['B05_norm'].height:
-            with open('saved_settings.txt','w') as f:
-                f.write(str(USER_PREF)+'\n')
-            SFX['go'].play()
-
-        # Button 1
-        elif x < button_width:
-            buttons4[0].image = IMG['B01_press']
-            BEING_PRESSED = 0
-            SFX['click'].play()
-
-        # Button 2
-        elif x < button_width*2:
-            buttons4[1].image = IMG['B02_press']
-            BEING_PRESSED = 1
-            SFX['click'].play()
-
-        # Button 3
-        elif x < button_width*3:
-            buttons4[2].image = IMG['B03_press']
-            BEING_PRESSED = 2
-            SFX['click'].play()
-
-        # Button 4
-        elif x < button_width*4:
-            buttons4[3].image = IMG['B04_press']
-            BEING_PRESSED = 3
-            SFX['click'].play()
-
-    @WINDOW.event
-    def on_mouse_release(x, y, button, modifiers):
-        global BEING_PRESSED
-        global USER_PREF
-        
-        # If a button is being pressed
-        if BEING_PRESSED != None:
-
-            # ...and another button was already selected
-            if USER_PREF != -1:
-                # Set that button back to normal FIRST
-                buttons4[USER_PREF].image = IMG['B0'+str(USER_PREF+1)+'_norm']
-
-            # Select it
-            buttons4[BEING_PRESSED].image = IMG['B0'+str(BEING_PRESSED+1)+'_selec']
-            USER_PREF = BEING_PRESSED
-
-    @WINDOW.event
-    def on_draw():
-        WINDOW.clear()  # Set background color
-        Batch.draw()    # Draw ALL the sprites!
-
-    ##WINDOW.push_handlers(pyglet.window.event.WindowEventLogger())
+    ##WIN.push_handlers(pyglet.window.event.WindowEventLogger())
     pyglet.app.run()
 
 if __name__ == '__main__':
