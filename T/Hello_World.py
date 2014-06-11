@@ -1,3 +1,5 @@
+from os import path
+
 import pyglet
 from pyglet.window import key, mouse
 from pyglet.resource import image as pygImage
@@ -109,9 +111,41 @@ class CustomWindow(pyglet.window.Window):
         self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
 
     def submit(self):
-        with open('saved_settings.txt','w') as f:
+
+        # By default, save their setting in the .exe directory
+        if not path.isfile('write_to.txt'):
+
+            with open("saved_settings.txt",'w') as f:
                 f.write(str(self.selected+1)+'\n')
-            self.SFX['go'].play()
+
+                print "We didn't find the file so we're doing it the lame way."
+
+            
+        # But if there's a file to be found, it might have a directory...
+        else:
+
+            print "Found the file..."
+
+            # Let's crack it open...
+            with open("write_to.txt","r") as f:
+                directory = f.read()
+
+            # If the directory is there, write to it!
+            if path.exists(directory):
+
+                    with open(path.join(directory,"saved_settings.txt"),'w') as f:
+                        f.write(str(self.selected+1)+'\n')
+
+                        print "Look at that! Saved it at",directory
+
+            else:
+                
+                with open("saved_settings.txt",'w') as f:
+                    f.write(str(self.selected+1)+'\n')
+
+                    print directory,"didn't exist so we're doing it the lame way."
+
+        self.SFX['go'].play()
 
 def main():
     # CONSTANTS
