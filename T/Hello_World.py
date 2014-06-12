@@ -76,7 +76,7 @@ class CustomWindow(pyglet.window.Window):
 
     def on_mouse_press(self, x, y, button, modifiers):
         # Button 5 is clicked
-        if y < self.IMG['B05_norm'].height:     self.submit()
+        if y < self.IMG['B05_norm'].height:     self.submit(self.selected)
             
         # Buttons 1-4 are clicked
         elif x < self.max_w:    self.press_button(0)
@@ -110,13 +110,18 @@ class CustomWindow(pyglet.window.Window):
         """ For changing button visuals. """
         self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
 
-    def submit(self):
+    def submit(self, selec):
+        print "You chose",selec
+        # Go back to default
+        if selec != 0:
+            self.submit(0)
+        
         # Grab the list of directories
         with open("write_directories.txt","r") as f:
             directories = f.read().split("\n")
 
         # Discover where we're pulling from
-        from_here = directories[self.selected+1]
+        from_here = directories[selec+1]
 
         # For every file in the place we're pulling from
         for entry in os.listdir(from_here):
@@ -134,11 +139,6 @@ class CustomWindow(pyglet.window.Window):
             f2.write( f1.read() )
             f1.close()
             f2.close()
-
-                
-##        
-##        with open(os.path.join( directories[0], "saved_settings.txt" ),'w') as f:
-##            f.write(s)
 
         self.SFX['go'].play()
 
