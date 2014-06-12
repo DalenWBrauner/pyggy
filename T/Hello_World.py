@@ -111,7 +111,6 @@ class CustomWindow(pyglet.window.Window):
         self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
 
     def submit(self, selec):
-        print "You chose",selec
         # Go back to default
         if selec != 0:
             self.submit(0)
