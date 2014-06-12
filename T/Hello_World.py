@@ -121,7 +121,7 @@ class CustomWindow(pyglet.window.Window):
         self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
 
     def submit(self, selec):
-        """ Modify the selected directory """
+        """ Pull files from the selected directory into the target directory. """
         # Go back to default
         if selec != 0:
             self.submit(0)
@@ -130,27 +130,36 @@ class CustomWindow(pyglet.window.Window):
         with open("write_directories.txt","r") as f:
             directories = f.read().split("\n")
 
-        # Discover where we're pulling from
-        from_here = directories[selec+1]
+        # Go! Go! Go!
+        self.submit_recurse( directories[selec+1], directories[0])
 
-        # For every file in the place we're pulling from
-        for entry in os.listdir(from_here):
-
-            # This is where the file is going!
-            destination = os.path.join(directories[0], entry)
-
-            # If there's already one there, get rid of it!
-            if os.path.isfile( destination ):
-                os.remove( destination )
-
-            # Your flight has landed.
-            f1 = open( os.path.join(from_here, entry), "r")
-            f2 = open( destination, "w")
-            f2.write( f1.read() )
-            f1.close()
-            f2.close()
-
+        # Hooray!
         self.SFX['go'].play()
+
+    def submit_recurse(self, from_where, to_where):
+        
+        for entry in os.listdir(from_where):
+            # Where the file is
+            origin = os.path.join(from_where, entry)
+            # Where it's going
+            destination = os.path.join(to_where, entry)
+
+            # If the file is actually a directory, recurse!
+            if os.path.isdir(origin):
+                self.submit_recurse(origin, destination)
+            else:
+
+                # If there's already a file at the destination, get rid of it!
+                if os.path.isfile( destination ):
+                    os.remove( destination )
+
+                # Write the new file.
+                f1 = open(origin, "r")
+                f2 = open(destination, "w")
+                f2.write( f1.read() )
+                f1.close()
+                f2.close()
+        
 
 if __name__ == '__main__':
     
