@@ -10,6 +10,8 @@ from pyglet.image import load as LocalImage
 class CustomWindow(pyglet.window.Window):
     def __init__(self, IMG, SFX, *args, **kwargs):
 
+        SFX['start'].play()
+
         # Image and sound libraries
         self.IMG = IMG
         self.SFX = SFX
@@ -155,9 +157,6 @@ def main():
     SFX = {}
     for sound in SOUND_FILES:
         SFX[ sound[:-4] ] = pygMedia(sound, streaming=False)
-
-    # PLAY ASAP
-    SFX['start'].play()
 
     # LOAD IMAGES
     IMG = {}
