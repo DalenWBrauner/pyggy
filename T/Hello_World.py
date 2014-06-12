@@ -111,17 +111,34 @@ class CustomWindow(pyglet.window.Window):
         self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
 
     def submit(self):
+        # Grab the list of directories
         with open("write_directories.txt","r") as f:
             directories = f.read().split("\n")
 
+        # Discover where we're pulling from
         from_here = directories[self.selected+1]
-        contents = os.listdir(from_here)
-        s = ''
-        for c in contents:
-            s += c+'\n'
-        
-        with open(os.path.join( directories[0], "saved_settings.txt" ),'w') as f:
-            f.write(s)
+
+        # For every file in the place we're pulling from
+        for entry in os.listdir(from_here):
+
+            # This is where the file is going!
+            destination = os.path.join(directories[0], entry)
+
+            # If there's already one there, get rid of it!
+            if os.path.isfile( destination ):
+                os.remove( destination )
+
+            # Your flight has landed.
+            f1 = open( os.path.join(from_here, entry), "r")
+            f2 = open( destination, "w")
+            f2.write( f1.read() )
+            f1.close()
+            f2.close()
+
+                
+##        
+##        with open(os.path.join( directories[0], "saved_settings.txt" ),'w') as f:
+##            f.write(s)
 
         self.SFX['go'].play()
 
