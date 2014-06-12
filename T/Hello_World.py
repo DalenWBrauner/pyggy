@@ -7,6 +7,14 @@ from pyglet.resource import media as pygMedia
 from pyglet.sprite import Sprite as pygSprite
 from pyglet.image import load as LocalImage
 
+IMAGE_FILES = ('B01_norm.png','B01_press.png','B01_selec.png',
+               'B02_norm.png','B02_press.png','B02_selec.png',
+               'B03_norm.png','B03_press.png','B03_selec.png',
+               'B04_norm.png','B04_press.png','B04_selec.png',
+               'B05_norm.png',
+               'icon1.png','icon2.png')
+SOUND_FILES = ('start.wav','go.wav','click.wav')
+
 class CustomWindow(pyglet.window.Window):
     def __init__(self, IMG, SFX, *args, **kwargs):
 
@@ -113,6 +121,7 @@ class CustomWindow(pyglet.window.Window):
         self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
 
     def submit(self, selec):
+        """ Modify the selected directory """
         # Go back to default
         if selec != 0:
             self.submit(0)
@@ -143,16 +152,8 @@ class CustomWindow(pyglet.window.Window):
 
         self.SFX['go'].play()
 
-def main():
-    # CONSTANTS
-    IMAGE_FILES = ('B01_norm.png','B01_press.png','B01_selec.png',
-                   'B02_norm.png','B02_press.png','B02_selec.png',
-                   'B03_norm.png','B03_press.png','B03_selec.png',
-                   'B04_norm.png','B04_press.png','B04_selec.png',
-                   'B05_norm.png',
-                   'icon1.png','icon2.png')
-    SOUND_FILES = ('start.wav','go.wav','click.wav')
-
+if __name__ == '__main__':
+    
     # LOAD SOUND EFFECTS
     SFX = {}
     for sound in SOUND_FILES:
@@ -165,10 +166,6 @@ def main():
 
     # LAUNCH WINDOW
     WIN = CustomWindow(IMG, SFX)
-
-    # GOGOGO
+    
     ##WIN.push_handlers(pyglet.window.event.WindowEventLogger())
     pyglet.app.run()
-
-if __name__ == '__main__':
-    main()
