@@ -1,4 +1,4 @@
-import os
+from distutils import dir_util
 
 import pyglet
 from pyglet.window import key, mouse
@@ -122,43 +122,19 @@ class CustomWindow(pyglet.window.Window):
 
     def submit(self, selec):
         """ Pull files from the selected directory into the target directory. """
-        # Go back to default
+        # Reset to default values first.
         if selec != 0:
             self.submit(0)
         
-        # Grab the list of directories
         with open("write_directories.txt","r") as f:
+            # List of directories
             directories = f.read().split("\n")
 
-        # Go! Go! Go!
-        self.submit_recurse( directories[selec+1], directories[0])
+        # We write to directories[0] from directories[1 + what the user selected]
+        dir_util.copy_tree( directories[selec+1], directories[0])
 
-        # Hooray!
+        # The sound file plays after everything's been copied.
         self.SFX['go'].play()
-
-    def submit_recurse(self, from_where, to_where):
-        
-        for entry in os.listdir(from_where):
-            # Where the file is
-            origin = os.path.join(from_where, entry)
-            # Where it's going
-            destination = os.path.join(to_where, entry)
-
-            # If the file is actually a directory, recurse!
-            if os.path.isdir(origin):
-                self.submit_recurse(origin, destination)
-            else:
-
-                # If there's already a file at the destination, get rid of it!
-                if os.path.isfile( destination ):
-                    os.remove( destination )
-
-                # Write the new file.
-                f1 = open(origin, "r")
-                f2 = open(destination, "w")
-                f2.write( f1.read() )
-                f1.close()
-                f2.close()
         
 
 if __name__ == '__main__':
