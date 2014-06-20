@@ -120,11 +120,11 @@ class CustomWindow(pyglet.window.Window):
         """ For changing button visuals. """
         self.options[which].image = self.IMG['B0'+str(which+1)+'_'+to_what]
 
-    def submit(self, selec):
+    def submit(self, selec, playingSFX=True):
         """ Pull files from the selected directory into the target directory. """
         # Reset to default values first.
         if selec != 0:
-            self.submit(0)
+            self.submit(0,playingSFX=False)
         
         with open("write_directories.txt","r") as f:
             # List of directories
@@ -134,7 +134,8 @@ class CustomWindow(pyglet.window.Window):
         dir_util.copy_tree( directories[selec+1], directories[0])
 
         # The sound file plays after everything's been copied.
-        self.SFX['go'].play()
+        if playingSFX:
+            self.SFX['go'].play()
         
 
 if __name__ == '__main__':
