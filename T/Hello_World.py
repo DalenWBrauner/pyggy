@@ -3,10 +3,10 @@ from os import path
 
 import pyglet
 from pyglet.window import key, mouse
-from pyglet.resource import image as pygImage
+from pyglet.image import load as pygImage
 from pyglet.media import load as pygMedia
 from pyglet.sprite import Sprite as pygSprite
-from pyglet.image import load as LocalImage
+
 
 IMAGE_FILES = ('B01_norm.png','B01_press.png','B01_selec.png',
                'B02_norm.png','B02_press.png','B02_selec.png',
@@ -48,8 +48,8 @@ class CustomWindow(pyglet.window.Window):
 
         # Set the icon
         self.set_icon(
-            LocalImage( path.join(FILE_LOC,'icon1.png') ),
-            LocalImage( path.join(FILE_LOC,'icon2.png') ))
+            pygImage( path.join(FILE_LOC,'icon1.png') ),
+            pygImage( path.join(FILE_LOC,'icon2.png') ))
 
         # Prep for Sprites
         self.batch = pyglet.graphics.Batch()
