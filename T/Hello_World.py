@@ -1,9 +1,10 @@
 from distutils import dir_util
+from os import path
 
 import pyglet
 from pyglet.window import key, mouse
 from pyglet.resource import image as pygImage
-from pyglet.resource import media as pygMedia
+from pyglet.media import load as pygMedia
 from pyglet.sprite import Sprite as pygSprite
 from pyglet.image import load as LocalImage
 
@@ -14,6 +15,7 @@ IMAGE_FILES = ('B01_norm.png','B01_press.png','B01_selec.png',
                'B05_norm.png',
                'icon1.png','icon2.png')
 SOUND_FILES = ('start.wav','go.wav','click.wav')
+FILE_LOC = ""
 
 class CustomWindow(pyglet.window.Window):
     def __init__(self, IMG, SFX, *args, **kwargs):
@@ -45,7 +47,9 @@ class CustomWindow(pyglet.window.Window):
         super(CustomWindow, self).__init__(win_width, win_height, caption='Transition()')
 
         # Set the icon
-        self.set_icon(LocalImage('icon1.png'),LocalImage('icon2.png'))
+        self.set_icon(
+            LocalImage( path.join(FILE_LOC,'icon1.png') ),
+            LocalImage( path.join(FILE_LOC,'icon2.png') ))
 
         # Prep for Sprites
         self.batch = pyglet.graphics.Batch()
@@ -126,7 +130,7 @@ class CustomWindow(pyglet.window.Window):
         if selec != 0:
             self.submit(0,playingSFX=False)
         
-        with open("write_directories.txt","r") as f:
+        with open( path.join(FILE_LOC,"write_directories.txt") ,"r") as f:
             # List of directories
             directories = f.read().split("\n")
 
@@ -143,12 +147,12 @@ if __name__ == '__main__':
     # LOAD SOUND EFFECTS
     SFX = {}
     for sound in SOUND_FILES:
-        SFX[ sound[:-4] ] = pygMedia(sound, streaming=False)
+        SFX[ sound[:-4] ] = pygMedia( path.join(FILE_LOC, sound), streaming=False)
 
     # LOAD IMAGES
     IMG = {}
     for image in IMAGE_FILES:
-        IMG[ image[:-4] ] = pygImage(image)
+        IMG[ image[:-4] ] = pygImage( path.join(FILE_LOC,image) )
 
     # LAUNCH WINDOW
     WIN = CustomWindow(IMG, SFX)
