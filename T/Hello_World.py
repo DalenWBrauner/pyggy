@@ -126,6 +126,10 @@ class CustomWindow(pyglet.window.Window):
 
     def submit(self, selec, playingSFX=True):
         """ Pull files from the selected directory into the target directory. """
+
+        # Confirm button press.
+        self.SFX['click'].play()
+        
         # Reset to default values first.
         if selec != 0:
             self.submit(0,playingSFX=False)
